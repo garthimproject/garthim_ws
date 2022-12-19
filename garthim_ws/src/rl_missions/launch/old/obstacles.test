@@ -1,0 +1,69 @@
+<launch>
+    <rosparam param="actions_enabled">
+        [0,2,3]
+    </rosparam>
+    <arg name="robot_model_name" value="turtlebot" />
+     <arg name="gazebo_namespace" value="gazebo" />
+     <param name="gazebo_namespace" value="$(arg gazebo_namespace)" />
+    <param name="robot_model_name" value="$(arg robot_model_name)"/>
+
+    <param name="scanner_orientation_levels" value="3"/>
+    <node pkg="robot_interface" name="rl" type="gazebo_interface_node" output="screen" cwd="node">
+        <param name="task_interface" value="navigation_interface::NavigationInterface" />
+        <param name="discrete" value="true" />
+        <param name="radius_target" value="0.25"/>
+        <param name="radius" value="1.5"/>
+        <param name="radius_levels" value="8"/>
+        <param name="orientation_levels" value="8"/>
+        <!-- 
+        <param name="linear_velocity_module" value="0.3"/>
+        <param name="angular_velocity_module" value="0.9"/>
+        -->
+        <rosparam param="regions_x">
+            [0.5, 12.7, 10.5, 12.7]
+        </rosparam>
+        <rosparam param="regions_y">
+            [0.3, 2.5, 2.5, 12.7]
+        </rosparam>
+        <param name="debug_target_generator" value="true" />
+        <param name="linear_velocity_module" value="0.1875"/>
+        <param name="angular_velocity_module" value="0.785398"/>
+        <param name="time_for_action" value="1.0"/>
+        <param name="max_episodes" value="500"/>
+        <param name="episodic" value="true" />
+        <param name="max_steps_per_episode" value="250"/>
+        <param name="laser_topic" value="/laserscan" />
+        <param name="scanner_min_depth" value="0.05"/>
+        <param name="scanner_depth_levels" value="3"/>
+        <param name="units_to_collide" value="1.90"/>
+        <param name="scaffolder_obstacles" value="true" />
+        <param name="increment_scaffolding" value="0.25" />
+        <param name="buffer_episode_size_scaffolding" value="200" />
+       <!-- <param name="height_walls" value="3.5"/>
+        <param name="width_walls" value="2.5"/> 
+        <param name="target_destiny_x" value="0.65"/>
+        <param name="target_destiny_y" value="-0.90"/>
+        -->
+    </node> 
+    <arg name="robot_pose_x" default="1.50"/>
+    <arg name="robot_pose_y" default="1.50"/>
+    <arg name="robot_pose_yaw" default="0" />
+    <include file="$(find rl_missions)/launch/gazebo_environment.test">
+        <arg name="launch_file" value="$(find crumb_gazebo)/launch/turtlebot_world.launch"/>
+        <arg name="robot_pose_x" value="$(arg robot_pose_x)"/>
+        <arg name="robot_pose_y" default="$(arg robot_pose_y)"/>
+        <arg name="robot_pose_yaw" default="$(arg robot_pose_yaw)"/>
+        <arg name="world_name" value="$(find pedsim_gazebo_plugin)/worlds/social_contexts_prueba.world" /> 
+        
+        
+        <arg name="robot_model_name" value="$(arg robot_model_name)" />
+        <arg name="gazebo_namespace" value="$(arg gazebo_namespace)" />
+        <arg name="reward_function" value="reward::RewardNextStateScannerFunction" /> 
+        <arg name="decider_implementation" value="decider::DeciderMultipleTemperatures" />
+        <arg name="max_steps" value="300000"/>
+        <arg name="max_episodes" value="2000" />
+        <arg name="read_initial_table" value="true"/>
+        <arg name="is_scaffolding_recorded" value="true"/>
+        <arg name="repeat_distance_states_for_scanner_states" value="true"/>
+    </include>
+</launch>

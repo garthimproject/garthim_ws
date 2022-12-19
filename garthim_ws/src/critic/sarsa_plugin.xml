@@ -1,0 +1,7 @@
+<library path="lib/libsarsa">
+    <class type="critic::Sarsa" base_class_type="critic::Critic">
+        <description>
+            This plugin implements SARSA Reinforcement Learning algorithm.
+        </description>
+    </class>
+</library>

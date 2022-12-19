@@ -1,0 +1,6 @@
+<launch>
+    
+    <include file="$(find robot_interface)/launch/gazebo_interface.launch"> 
+    </include>
+    <test test-name="discrete_world_tests" pkg="robot_interface" type="world_discrete_test"/>
+</launch>

@@ -1,0 +1,27 @@
+<launch>
+
+    <include file="$(find rl_missions)/launch/core/rl_gazebo.launch"/>
+    <rosparam param="actions_enabled">
+        [0,2,3,4,5]
+    </rosparam>
+    <arg name="robot_model_name" default="turtlebot"/>
+    <param name="robot_model_name" value="$(arg robot_model_name)"/>
+    <include file="$(find rl_missions)/launch/core/rl_navigation.launch">
+        <arg name="initial_radius_target" value="0.45"/>
+        <arg name="threshold_scaffolding" value="1.0"/>
+        <arg name="buffer_episode_size_scaffolding" value="200" />
+        <arg name="radius_levels" value="3"/>
+        <arg name="time_actions" value="[0.50, 1.0, 1.5, 2.0]"/>
+    </include>
+    <arg name="decider_loop_evasion_on" value="false"/>
+    <include file="$(find rl_missions)/launch/core/rl_nodes.launch">
+        <arg name="reward_function" value="reward::RewardActionFunction"/>
+        <arg name="decider_implementation" value="decider::DeciderLoopEvasion" if="$(arg decider_loop_evasion_on)"/> 
+        <arg name="decider_implementation" value="decider::DeciderBoltzmannCorrection" unless="$(arg decider_loop_evasion_on)"/>
+        <arg name="temperature" value="83.3333"/>
+        <arg name="is_normalized_Q" value="true"/>
+        <arg name="is_biased" value="true"/>
+        <arg name="is_temperature_decreasing" value="true" />
+        <arg name="max_episodes" value="1200" />
+    </include>
+</launch>

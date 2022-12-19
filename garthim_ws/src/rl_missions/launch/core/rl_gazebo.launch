@@ -1,0 +1,29 @@
+<launch>
+
+    <arg name="world_name" default="$(find crumb_gazebo)/worlds/crumb_learning.world" />
+    <arg name="launch_world_file" default="$(find crumb_gazebo)/launch/turtlebot_world.launch"/>
+    <arg name="procedence_of_launch_file" default="$(find gazebo_ros)" />
+    <arg name="robot_model_name" default="turtlebot" />
+    <arg name="robot_pose_x" default="0"/>
+    <arg name="robot_pose_y" default="0"/>
+    <arg name="robot_pose_yaw" default="0"/>
+    <group ns="rl_starter_node">
+        <param name="robot_pose_x" value="$(arg robot_pose_x)"/>
+        <param name="robot_pose_y" value="$(arg robot_pose_y)"/>
+        <param name="robot_pose_yaw" value="$(arg robot_pose_yaw)"/>
+    </group>
+    <arg name="publish_odom" default="false" />
+    <node name="rl_gazebo" pkg="rl_gazebo" type="rl_gazebo_node" output="screen">
+        <param name="publish_odom" value="$(arg publish_odom)" />
+    </node>
+    <param name="gazebo_namespace" value="gazebo"/>
+    <include file="$(arg launch_world_file)">
+        <arg name="launch_file" value="$(arg procedence_of_launch_file)/launch/empty_world.launch" />
+        <arg name="world_name" value="$(arg world_name)"/>
+        <arg name="robot_model_name" value="$(arg robot_model_name)" />
+        <arg name="initial_pose_x" value="$(arg robot_pose_x)"/>
+        <arg name="initial_pose_y" value="$(arg robot_pose_y)"/>
+        <arg name="initial_pose_yaw" value="$(arg robot_pose_yaw)"/>
+        <!-- <arg name="gazebo_namespace" value="$(arg gazebo_namespace)"/> -->
+    </include>
+</launch>

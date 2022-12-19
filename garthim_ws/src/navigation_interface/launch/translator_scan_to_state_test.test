@@ -1,0 +1,22 @@
+<launch>
+    <param name="total_actions" value="6"/>
+    <node name="rl_gazebo" pkg="rl_gazebo" type="rl_gazebo_node" output="screen"/>
+  
+    <test test-name="translator_scan_to_state_test" pkg="navigation_interface" type="translator_scan_to_state_test">
+        <param name="task_interface" value="navigation_interface::NavigationInterface" />
+        <param name="discrete" value="true" />
+        <param name="radius_target" value="0.5"/>
+        <param name="radius" value="1.5"/>
+        <param name="radius_levels" value="8"/>
+        <param name="orientation_levels" value="8"/>
+        <param name="linear_velocity_module" value="0.3"/>
+        <param name="angular_velocity_module" value="0.9"/>
+        <rosparam param="times_for_action">
+            [0.25,0.5,1.0,1.5,2.0]
+        </rosparam>
+        <param name="max_episodes" value="500"/>
+        <param name="episodic" value="true" />
+        <param name="max_steps_per_episode" value="250"/>
+        <param name="laser_topic" value="blank" />
+    </test> 
+</launch>

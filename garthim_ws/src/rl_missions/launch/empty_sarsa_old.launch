@@ -1,0 +1,19 @@
+<launch>
+
+    <include file="$(find rl_missions)/launch/core/rl_gazebo.launch"/>
+    <rosparam param="actions_enabled">
+        [0,2,3]
+    </rosparam>
+    <arg name="robot_model_name" default="turtlebot"/>
+    <param name="robot_model_name" value="$(arg robot_model_name)"/>
+    <include file="$(find rl_missions)/launch/core/rl_navigation.launch">
+
+        <arg name="initial_radius_target" value="0.45"/>
+        <arg name="threshold_scaffolding" value="5000"/>
+    </include>
+    <include file="$(find rl_missions)/launch/core/rl_nodes.launch">
+        <arg name="decider_implementation" value="decider::DeciderBoltzmannCorrection"/>
+        <arg name="temperature" value="50"/>
+        <arg name="old_sarsa" value="true"/>
+    </include>
+</launch>

@@ -1,0 +1,85 @@
+<launch>
+    <arg name="decider_implementation" default="decider::DeciderBoltzmannCorrection"/>
+    <arg name="temperature" default="50"/>
+    <arg name="is_temperature_decreasing" default="false" />
+    <arg name="decider_queue_states" default="DLEQueueStates" />
+    <arg name="decider_queue_rewards" default="DLEQueueRewards" />
+    <arg name="decider_steps_temperature" default="DLEStepsTemperature" />
+    <arg name="decider_Qs" default="DLEQS" />
+    <arg name="is_dle_set_decider_exploitation" default="false" />
+    <arg name="record_dle_files" value="$(eval arg('decider_implementation') == 'decider::DeciderLoopEvasion' or arg('is_dle_set_decider_exploitation'))" />
+    <arg name="respawn" default="false" />
+    <arg name="lambda_temperature" default="0.9999" />
+    <arg name="epsilon_egreedy" default="0.3" />
+    <node pkg="decider" name="decider" type="decider_node" output="screen" cwd="node" respawn="$(arg respawn)">
+        <param name="decider_implementation" value="$(arg decider_implementation)"/>
+        <param name="temperature" value="$(arg temperature)"/>
+        <param name="is_decreasing" value="$(arg is_temperature_decreasing)"/>
+        <param name="loop_detection_enabled" value="$(arg record_dle_files)" />
+        <param name="queue_states" value="$(arg decider_queue_states)" if="$(arg record_dle_files)"/>
+        <param name="queue_rewards" value="$(arg decider_queue_rewards)" if="$(arg record_dle_files)"/>
+        <param name="steps_temperature" value="$(arg decider_steps_temperature)" if="$(arg record_dle_files)"/>
+        <param name="q_s" value="$(arg decider_Qs)" if="$(arg record_dle_files)"/>
+        <param name="lambda" value="$(arg lambda_temperature)" />
+        <param name="epsilon" value="$(arg epsilon_egreedy)" />
+    </node>
+    <arg name="critic_implementation" default="critic::TrueOnlineSarsa"/>
+    <arg name="filename_critic" default="Q"/>
+    <arg name="filename_end_critic" default="QFinal"/>
+    <arg name="filename_initial_critic" default="QIni" />
+    <arg name="repeat_distance_states_for_scanner_states" default="false"/>
+    <arg name="repeat_distance_states_for_spencer_states" default="false"/>
+    <arg name="read_initial_table" default="false"/>
+    <arg name="max_episodes" default="1000" />
+    <arg name="is_scaffolding_recorded" default="true"/>
+    <arg name="old_sarsa" default="false"/>
+    <arg name="step_size" default="0.1" />
+    <arg name="is_normalized_Q" default="false" />
+    <arg name="is_biased" default="false" />
+    <arg name="save_Q" default="true" />
+    <arg name="learning_with_transition_model" default="false"/>
+    <arg name="write_file_read" default="false"/>
+    <node pkg="critic" name="critic" type="critic_node" output="screen" cwd="node" respawn="$(arg respawn)">
+        <param name="critic_implementation" value="$(arg critic_implementation)"/>
+        <param name="old_sarsa" value="$(arg old_sarsa)"/>
+        <param name="max_episodes" value="$(arg max_episodes)"/>
+        <param name="filename" value="$(arg filename_critic)"/>
+        <param name="filename_end" value="$(arg filename_end_critic)"/>
+        <param name="url_initial_value_function" value="$(arg filename_initial_critic)" if="$(arg read_initial_table)" />
+        <param name="repeat_distance_states_for_scanner_states" value="true" if="$(arg repeat_distance_states_for_scanner_states)" />
+        <param name="repeat_distance_states_for_spencer_states" value="true" if="$(arg repeat_distance_states_for_spencer_states)" />
+        <param name="filename_Q_scaffolding" value="QScaff" if="$(arg is_scaffolding_recorded)"/>
+        <param name="increment_file_counter" value="$(eval (not arg('record_dle_files')) and (not arg('learning_with_transition_model')))" type="bool"/> 
+        <param name="step_size" value="$(arg step_size)"/>
+        <param name="is_normalized_Q" value="$(arg is_normalized_Q)" />
+        <param name="is_biased" value="$(arg is_biased)" />
+        <param name="write_file_read" value="true" if="$(arg write_file_read)"/>
+        <param name="save_Q" value="$(arg save_Q)" />
+    </node>
+    <arg name="reward_function" default="reward::RewardNextStateFunction"/>
+    <param name="reward_function" value="$(arg reward_function)" />
+    <arg name="reward_value_for_collision" default="-10"/>
+
+    <arg name="use_weight_reward" default="false" />
+    <node pkg="reward" name="reward" type="reward_node" output="screen" cwd="node"> 
+        <rosparam param="bounds">
+            [0.0, 8.0]
+        </rosparam>
+        <rosparam param="rewards" unless="$(eval arg('reward_function') == 'reward::RewardActionFunction' or arg('reward_function') == 'reward::RewardActionScannerFunction')">
+            [100.0, -0.4]
+        </rosparam>
+        <rosparam param="rewards_as_vector" if="$(eval arg('reward_function') == 'reward::RewardActionFunction' or arg('reward_function') == 'reward::RewardActionScannerFunction')">
+            [100.0, -0.4, 100.0, -0.4, 100.0, -0.4, 100.0, -0.1, 100.0, -0.1]
+        </rosparam>
+        <param name="collision" value="$(arg reward_value_for_collision)"/>
+        <param name="weight_reward" value="$(arg use_weight_reward)" />
+    </node>
+    <arg name="filename_recordtab" default="RecordTab"/>
+    <arg name="filename_endepisode" default="EpisodeCompletation"/>
+    <node pkg="file_recorder" name="file_recorder" type="file_recorder_node" output="screen" cwd="node" respawn="$(arg respawn)">
+        <param name="filename_scaffolding" value="ScaffoldingFile" if="$(arg is_scaffolding_recorded)"/>
+        <param name="filename" value="$(arg filename_recordtab)"/>
+        <param name="filename_end" value="$(arg filename_endepisode)"/>
+    </node>
+    
+</launch>

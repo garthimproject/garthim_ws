@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <name>regulator</name>
+  <version>0.0.0</version>
+  <description>The regulator package</description>
+
+ 
+  <maintainer email="varevalo@uma.es">Vicente Arevalo</maintainer>
+
+  <license>BSD</license>
+
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>regulator_client</run_depend>
+  <run_depend>regulator_interface</run_depend>
+
+  <export><metapackage/></export>
+
+</package>

@@ -1,0 +1,62 @@
+<launch>
+    <arg name="robot_pose_x" default="0"/>
+    <arg name="robot_pose_y" default="-0.352357"/>
+    <arg name="robot_pose_yaw" default="0"/>
+    
+    <rosparam param="actions_enabled">
+        [0,2,3,4,5]
+    </rosparam>
+    <arg name="robot_model_name" default="turtlebot"/>
+    
+    <param name="robot_model_name" value="$(arg robot_model_name)"/>
+    <arg name="decider_loop_evasion_on" value="false"/>
+    <include file="$(find rl_missions)/launch/core/rl_nodes.launch">
+        <arg name="read_initial_table" value="false"/>
+        <arg name="repeat_distance_states_for_scanner_states" value="false"/>
+        <arg name="reward_function" value="reward::RewardActionScannerFunction"/>
+        <arg name="reward_value_for_collision" value="-10"/>
+        <arg name="decider_implementation" value="decider::DeciderLoopEvasion" if="$(arg decider_loop_evasion_on)"/> 
+        <arg name="decider_implementation" value="decider::DeciderEGreedy" unless="$(arg decider_loop_evasion_on)"/>
+        <arg name="temperature" value="150"/>
+        <arg name="is_normalized_Q" value="true"/>
+        <arg name="is_biased" value="true"/>
+        <arg name="is_temperature_decreasing" value="true" />
+        <arg name="max_episodes" value="2500" />
+        <arg name="lambda_temperature" value="0.9999" />
+        <arg name="respawn" value="true" />
+        <arg name="learning_with_transition_model" value="true" />
+        <arg name="epsilon_egreedy" value="0.1" />
+    </include>
+
+
+    <param name="decrement_collision_reward" value="true"/>
+    <param name="decrement_collision_reward_each_step" value="1"/>
+    <include file="$(find rl_missions)/launch/core/rl_model.launch">
+        <arg name="obstacles" value="true"/>
+        <arg name="scanner_depth_levels" value="3"/>
+        <arg name="scanner_orientation_levels" value="3"/>
+        <arg name="initial_radius_target" value="0.45"/>
+        <arg name="increment_scaffolding" value="0.20" />
+        <arg name="buffer_episode_size_scaffolding" value="200" />
+        <arg name="threshold_scaffolding" value="1.0"/>
+        <arg name="is_using_kobuki_bumpers" value="false"/>
+        <arg name="grid_point_distance" value="0.02" />
+        <arg name="robot_pose_x" value="$(arg robot_pose_x)"/>
+        <arg name="robot_pose_y" value="$(arg robot_pose_y)"/>
+        <arg name="robot_pose_yaw" value="$(arg robot_pose_yaw)"/>
+        <arg name="debug_target_generator" value="false" />
+        <arg name="respawn" value="true" />
+        <!--<arg name="time_actions" value="[0.25,0.5, 1.0, 1.5, 1.75, 2.0]"/> -->
+
+        <arg name="time_actions" value="[0.75, 1.0, 1.5, 2.0]"/>
+        <arg name="radius_levels" value="3"/>
+        <arg name="orientation_levels" value="8"/>1
+        <arg name="scanner_depth_unit" value="0.20"/>
+
+        <arg name="increment_file_counter" value="true" />
+
+        <arg name="url_transition_model" value="Model_multiple_r900" />
+    </include>
+    
+    <param name="total_experiments" value="1" />
+</launch>

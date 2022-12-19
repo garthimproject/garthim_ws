@@ -1,0 +1,8 @@
+<library path="lib/libnavigation_interface">
+    <class type="navigation_interface::NavigationInterface" base_class_type="robot_interface::TaskInterface">
+        <description>
+            This plugin implements a method to interpret real world robot poses to rl-states.
+            Depending on the discrete model world, states are selected.
+        </description>
+    </class>
+</library>

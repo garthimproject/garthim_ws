@@ -1,0 +1,155 @@
+<launch>
+    <arg name="radius_levels" default="3"/>
+    <arg name="orientation_levels" default="8"/>
+    <arg name="scanner_depth_levels" default="1"/>
+    <arg name="scanner_depth_unit" default="0.20"/>
+    <arg name="scanner_radius_collision" default="0.30"/>
+    <arg name="scanner_orientation_levels" default="1"/>
+    <arg name="obstacles" default="false"/>
+    <arg name="initial_radius_target" default="0.25"/>
+    <arg name="threshold_scaffolding" default="0.75"/>
+    <arg name="buffer_episode_size_scaffolding" default="100" />
+    <arg name="increment_scaffolding" default="0.20" />
+    <arg name="is_using_kobuki_bumpers" default="false"/>
+    <arg name="grid_point_distance" default="0.05" />
+    <arg name="robot_pose_x" default="0"/>
+    <arg name="robot_pose_y" default="0"/>
+    <arg name="robot_pose_yaw" default="0"/>
+    <arg name="time_actions" default="[1.0]"/>
+    <arg name="time_actions_states" value="$(eval len(eval(arg('time_actions'))))" />
+    <param name="time_actions_states" value="$(arg time_actions_states)" />
+    <arg name="respawn" default="false" />
+    <arg name="debug_target_generator" default="false" />
+    <arg name="spencer_enabled" default="false" />
+    <arg name="spencer_total_persons" default="0" />
+    <arg name="spencer_orientation_levels" default="1" />
+    <arg name="spencer_orientation_vel_levels" default="1" />
+    <arg name="spencer_depth_levels" default="1"/>
+    <arg name="spencer_depth_unit" default="0.3"/>
+    <arg name="spencer_depth_collision" default="0.50"/>
+    <arg name="spencer_orientation_vel_unit" default="0.30" />
+    <arg name="from_pedestrian_learning" default="false" />
+    <arg name="spencer_states_before" default="false" if="$(arg from_pedestrian_learning)"/>
+    <arg name="persons_topic" default="/spencer/perception/tracked_persons" />
+
+    <arg name="tg_region_x" default="[-0.09002, 1.60998]" />
+    <arg name="tg_region_y" default="[-1.20236, 0.49764]" />
+
+
+    <node name="rl_gazebo" pkg="rl_gazebo" type="rl_gazebo_node" output="screen">
+    </node>
+    <arg name="increment_file_counter" default="false" />
+    <arg name="url_transition_model" default="Model" />
+    <node pkg="robot_interface" name="rl" type="gazebo_interface_node" output="screen" cwd="node" respawn="$(arg respawn)">
+        <param name="url_transition_model" value="$(arg url_transition_model)"/>
+        <!--modes -->
+        <param name="discrete" value="true" />
+        <param name="episodic" value="true" />
+        <param name="debug_target_generator" value="$(arg debug_target_generator)" />
+        <param name="scaffolder_obstacles" value="$(arg obstacles)"/>
+
+        <param name="robot_pose_x" value="$(arg robot_pose_x)"/>
+        <param name="robot_pose_y" value="$(arg robot_pose_y)"/>
+        <param name="robot_pose_yaw" value="$(arg robot_pose_yaw)"/>
+        <!-- implementation used -->
+        <param name="task_interface" value="model_interface::ModelInterface" />
+        <!-- distance/orientation states -->
+        <param name="radius_goal_states" value= "0.1875"/>
+        <param name="radius_unit_states" value= "0.1875"/>
+        <param name="radius_long_distance_states" value= "0.3500"/>
+        <param name="radius_levels" value="$(arg radius_levels)"/>
+        <param name="orientation_levels" value="$(arg orientation_levels)"/>
+        <!-- scanner states -->
+        
+        <param name="scanner_min_depth" value="0.05" if="$(arg obstacles)"/>
+        <param name="scanner_orientation_levels" value="$(arg scanner_orientation_levels)" if="$(arg obstacles)" />
+        <param name="scanner_depth_levels" value="$(arg scanner_depth_levels)" if="$(arg obstacles)"/>
+        <param name="scanner_depth_unit" value="$(arg scanner_depth_unit)" if="$(arg obstacles)"/>
+        <param name="scanner_radius_collision" value="$(arg scanner_radius_collision)" if="$(arg obstacles)"/>
+        <param name="units_to_collide" value="1.90" if="$(arg obstacles)"/>
+        
+        <!-- spencer states-->
+        <param name="spencer_total_persons" value="$(arg spencer_total_persons)" if="$(arg spencer_enabled)"/>
+        <param name="spencer_orientation_levels" value="$(arg spencer_orientation_levels)" if="$(arg spencer_enabled)"/>
+        <param name="spencer_orientation_vel_levels" value="$(arg spencer_orientation_vel_levels)" if="$(arg spencer_enabled)"/>
+        <param name="spencer_depth_levels" value="$(arg spencer_depth_levels)" if="$(arg spencer_enabled)"/>
+        <param name="spencer_depth_unit" value="$(arg spencer_depth_unit)" if="$(arg spencer_enabled)"/>
+        <param name="spencer_depth_collision" value="$(arg spencer_depth_collision)" if="$(arg spencer_enabled)"/>
+        <param name="spencer_orientation_vel_unit" value="$(arg spencer_orientation_vel_unit)" if="$(arg spencer_enabled)"/>
+        <!-- actions -->
+        <param name="linear_velocity_module" value="0.1875"/> <!--0.3 "0.1875"-->
+        <param name="angular_velocity_module" value="0.785398"/>
+        <rosparam param="times_for_action" subst_value="True">
+            $(arg time_actions)
+        </rosparam>
+        <!-- episodic learning -->
+        <param name="max_steps_per_episode" value="250"/>
+        <!-- target_generator params 
+        <rosparam param="regions_x">
+            [-0.318254, 2.431746]
+        </rosparam>
+        <rosparam param="regions_y">
+            [-0.604741, 0.645259]
+        </rosparam>
+        -->
+        <!-- target_generator params 
+        <rosparam param="regions_x">
+            [0.5, 12.7, 10.5, 12.7]
+        </rosparam>
+        <rosparam param="regions_y">
+            [0.3, 2.5, 2.5, 12.7]
+        </rosparam>
+        -->
+
+        <!-- target_generator params 
+        <rosparam param="regions_x">
+            [-1.70456, 4.04544]
+        </rosparam>
+        <rosparam param="regions_y">
+            [-2.321407, 1.928593]
+        </rosparam>
+         -->
+
+        <!-- target_generator params 
+        <rosparam param="regions_x">
+            [-0.96467, 0.63533]
+        </rosparam>
+        <rosparam param="regions_y">
+            [-0.20147, 1.39853]
+        </rosparam>
+-->
+        <!-- target_generator params -->
+        <rosparam param="regions_x" subst_value="True">
+            $(arg tg_region_x)
+        </rosparam>
+        <rosparam param="regions_y" subst_value="True">
+            $(arg tg_region_y)
+        </rosparam>
+        <param name="grid_point_distance" value="$(arg grid_point_distance)"/>
+        <param name="radius_target" value="$(arg initial_radius_target)"/>
+        <param name="buffer_episode_size_scaffolding" value="$(arg buffer_episode_size_scaffolding)" />
+        <param name="threshold_scaffolding" value="$(arg threshold_scaffolding)" />
+        <param name="increment_scaffolding" value="$(arg increment_scaffolding)" />
+        <param name="is_using_kobuki_bumpers" value="$(arg is_using_kobuki_bumpers)"/>
+        <!-- topics -->
+        <param name="spencer_topic" value="$(arg persons_topic)" if="$(arg spencer_enabled)" />
+        <param name="spencer_total_persons" value="$(arg spencer_total_persons)" if="$(arg spencer_enabled)" />
+        <param name="laser_topic" value="/laserscan" if="$(arg obstacles)" />
+
+        <param name="increment_file_counter" value="$(arg increment_file_counter)" />
+    </node>
+    <!-- <param name="scanner_states" value="$(eval arg('scanner_depth_levels')**arg('scanner_orientation_levels'))"/>
+    
+    <param name="total_states" value="$(eval ((radius_levels-1)*orientation_levels + 1)*((scanner_depth_levels-1)**scanner_orientation_levels+1))"/>
+    -->
+    <arg name="kobuki_bumper_states" value="$(eval 4 if arg('is_using_kobuki_bumpers') else 1)"/>
+    <param name="scanner_states" value="$(eval arg('kobuki_bumper_states')*arg('scanner_depth_levels')**arg('scanner_orientation_levels'))"/>
+    <arg name="spencer_states" value="$(eval (arg('spencer_depth_levels')*arg('spencer_orientation_vel_levels')*arg('spencer_orientation_levels'))**arg('spencer_total_persons'))" />
+    <param name="spencer_states" value="$(arg spencer_states)" />
+    <param name="spencer_states_before" value="$(arg spencer_states_before)" if="$(arg from_pedestrian_learning)"/>
+
+    <param name="from_pedestrian_learning" value="$(arg from_pedestrian_learning)" />
+    <param name="total_states" value="$(eval arg('time_actions_states')*arg('kobuki_bumper_states')*arg('radius_levels')*arg('orientation_levels')*arg('spencer_states')*(arg('scanner_depth_levels')**arg('scanner_orientation_levels')) )"/>
+    
+
+</launch>

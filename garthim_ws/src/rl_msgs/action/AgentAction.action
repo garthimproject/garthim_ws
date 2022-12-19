@@ -1,0 +1,10 @@
+#goal definition
+RLVariable action
+#1: Transition-Model, 0: Agent
+bool agent_id
+---
+#result definition
+TransitionResult transition
+---
+#feedback
+float64 time_elapsed

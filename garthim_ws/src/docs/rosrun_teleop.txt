@@ -1,0 +1,1 @@
+rosrun turtlebot_teleop turtlebot_teleop_key scale_linear:=0.5 scale_angular:=1.5 /turtlebot_teleop_keyboard/cmd_vel:=/cmd_vel_mux/input/teleop

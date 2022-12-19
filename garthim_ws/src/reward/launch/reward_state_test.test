@@ -1,0 +1,11 @@
+<launch>
+    
+    <test test-name="test_reward_state" pkg="reward" type="reward_state_test">
+        <rosparam param="bounds">
+            [-2.0, 10.0]
+        </rosparam>
+        <rosparam param="rewards">
+            [200.0, -4.3]
+        </rosparam>
+    </test>
+</launch>

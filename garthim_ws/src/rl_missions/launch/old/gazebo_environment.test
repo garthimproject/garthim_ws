@@ -1,0 +1,55 @@
+<launch>
+    <arg name="robot_model_name" default="crumb" />
+    <arg name="gazebo_namespace" default="gazebo"/>
+    <arg name="repeat_distance_states_for_scanner_states" default="false"/>
+    <param name="robot_model_name" value="$(arg robot_model_name)" />
+    <arg name="max_steps" default="18000"/>
+    <arg name="max_episodes" default="500" />
+    <arg name="world_name" default="$(find crumb_gazebo)/worlds/crumb_learning.world" />
+    <arg name="launch_file" default="$(find crumb_gazebo)/launch/crumb_world.launch"/>
+    <param name="max_episodes" value="$(arg max_episodes)"/>
+    <param name="max_steps" value="$(arg max_steps)"/>
+    <param name="agent_interface" value="gazebo"/>
+    <arg name="reward_function" default="reward::RewardNextStateFunction" />
+    <arg name="decider_implementation" default="decider::DeciderBoltzmannCorrection" />
+    <arg name="read_initial_table" default="false"/>
+    <arg name="robot_pose_x" default="0"/>
+    <arg name="robot_pose_y" default="0"/>
+    <arg name="robot_pose_yaw" default="0"/>
+    <arg name="temperature" default="50" />
+    <arg name="is_scaffolding_recorded" default="false"/>
+    <param name="gazebo_namespace" value="$(arg gazebo_namespace)" />
+   <node name="rl_gazebo" pkg="rl_gazebo" type="rl_gazebo_node" output="screen"/>
+  
+    <include file="$(arg launch_file)">
+        <arg name="world_name" value="$(arg world_name)"/>
+        <arg name="robot_model_name" value="$(arg robot_model_name)" />
+        <arg name="initial_pose_x" value="$(arg robot_pose_x)"/>
+        <arg name="initial_pose_y" default="$(arg robot_pose_y)"/>
+        <arg name="initial_pose_yaw" default="$(arg robot_pose_yaw)"/>
+        <!-- <arg name="gazebo_namespace" value="$(arg gazebo_namespace)"/> -->
+    </include>
+    <node pkg="decider" name="decider" type="decider_node" output="screen" cwd="node">
+        <param name="decider_implementation" value="$(arg decider_implementation)"/>
+        <param name="temperature" value="$(arg temperature)"/>
+    </node>
+    <node pkg="critic" name="critic" type="critic_node" output="screen" cwd="node">
+        <param name="critic_implementation" value="critic::Sarsa"/>
+        <param name="filename" value="Q"/>
+        <param name="filename_end" value="QFinal"/>
+        <param name="url_initial_value_function" value="QIni" if="$(arg read_initial_table)" />
+        <param name="repeat_distance_states_for_scanner_states" value="true" if="$(arg repeat_distance_states_for_scanner_states)" />
+    </node>
+    <param name="reward_function" value="$(arg reward_function)" />
+    <node pkg="reward" name="reward" type="reward_node" output="screen" cwd="node"> 
+        <rosparam param="bounds">
+            [0.0, 8.0]
+        </rosparam>
+        <rosparam param="rewards">
+            [100.0, -0.4]
+        </rosparam>
+    </node>
+    <node pkg="file_recorder" name="file_recorder" type="file_recorder_node" output="screen" cwd="node">
+        <param name="filename_scaffolding" value="ScaffoldingFile" if="$(arg is_scaffolding_recorded)"/>
+    </node>
+</launch>

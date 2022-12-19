@@ -1,0 +1,9 @@
+<launch>
+    <!-- <include file="$(find crumb_gazebo)/launch/crumb_world.launch" />
+    -->
+    <include file="$(find crumb_gazebo)/launch/crumb_world.launch">
+       <!-- <arg name="robot_model_name" value="$(arg robot_model_name)" />
+        <arg name="gazebo_namespace" value="$(arg gazebo_namespace)"/> -->
+    </include>
+    <node pkg="test_movement" name="mario" type="test_movement_mario" output="screen" cwd="node"/>
+</launch>

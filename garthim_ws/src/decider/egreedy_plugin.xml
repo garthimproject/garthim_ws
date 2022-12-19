@@ -1,0 +1,8 @@
+<library path="lib/libdecider_egreedy">
+    <class type="decider::DeciderEGreedy" base_class_type="decider::Decider">
+        <description>
+            This plugin implements decider for garthim-rl stack.
+            Actions would be selected following an e-greedy strategy.
+        </description>
+    </class>
+</library>

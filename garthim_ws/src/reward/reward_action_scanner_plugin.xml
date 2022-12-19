@@ -1,0 +1,8 @@
+<library path="lib/libreward_action_scanner">
+    <class type="reward::RewardActionScannerFunction" base_class_type="reward::RewardFunction">
+        <description>
+            This plugin implements reward function for garthim-rl stack.
+            Checks if next_state is present in an array depending on the action provided.
+        </description>
+    </class>
+</library>

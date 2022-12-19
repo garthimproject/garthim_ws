@@ -1,0 +1,4 @@
+uint32 timeout
+uint32 density
+---
+sensor_msgs/LaserScan laser

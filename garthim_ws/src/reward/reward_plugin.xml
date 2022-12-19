@@ -1,0 +1,8 @@
+<library path="lib/libreward_next_state_function">
+    <class type="reward::RewardNextStateFunction" base_class_type="reward::RewardFunction">
+        <description>
+            This plugin implements reward function for garthim-rl stack.
+            Checks and array if next_state is present.
+        </description>
+    </class>
+</library>

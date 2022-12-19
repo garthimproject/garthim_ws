@@ -1,0 +1,9 @@
+<launch>
+    <arg name="read_initial_table" default="false" />
+    <param name="total_states" value="4"/>
+    <test test-name="sarsa_test" pkg="critic" type="sarsa_test">
+        <param name="filename" value="Q_test"/>
+        <param name="filename_end" value="QFinal_test"/>
+        <param name="url_initial_value_function" value="QIni" if="$(arg read_initial_table)" />
+    </test> 
+</launch>

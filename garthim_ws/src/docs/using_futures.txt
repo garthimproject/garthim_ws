@@ -1,0 +1,22 @@
+	std::future<cv_bridge::CvImagePtr> future = task.get_future();  // get a future
+    //std::thread(std::move(task)).detach(); // launch on a thread
+    std::thread(std::move(task),(unsigned int)req.density).detach(); // launch on a thread
+
+    std::future_status status = future.wait_for(std::chrono::milliseconds(req.timeout));
+
+	    //en este caso, devolver datos vacios
+	//en caso contrario devolver los datos obtenidos por get
+	if(status != std::future_status::ready) 
+	{
+		terminar[TERMINAR_SERVICIO_CAMARA_GRAYSCALE]=true;
+		//ROS_INFO("Timeout consumido\n");
+		//res.image = bufferImage;// si queremos devolver algo
+		return false; //para no devolver nada
+	}
+	else{
+		//ROS_INFO("Terminado con éxito"); //es bloqueante
+		//If the shared state is not yet ready (i.e., the provider has not yet set its value or exception), 
+		//the function blocks the calling thread and waits until it is ready.
+		future.get()->toImageMsg(res.image);
+
+	}

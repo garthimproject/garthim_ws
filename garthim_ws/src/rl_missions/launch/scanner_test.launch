@@ -1,0 +1,13 @@
+<launch>
+    <include file="$(find rl_missions)/launch/core/rl_gazebo.launch">
+        <arg name="world_name" value="$(find crumb_gazebo)/worlds/crumb_walls_three_obstacles.world" />
+    </include>
+    <arg name="robot_model_name" default="turtlebot"/>
+    <param name="robot_model_name" value="$(arg robot_model_name)"/>
+    <param name="scanner_depth_unit" value="0.20"/>
+
+    <param name="scanner_depth_levels" value="3"/>
+    
+    <node pkg="navigation_interface" name="scanner_node_test" type="scanner_node_test" output="screen" cwd="node"/>
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find rl_missions)/rviz/scanner_test.rviz" />
+</launch>

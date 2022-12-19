@@ -1,0 +1,6 @@
+uint16[] rows
+uint16[] columns
+---
+float64[] data
+uint16 nrows
+uint16 ncolumns

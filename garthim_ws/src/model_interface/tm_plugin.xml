@@ -1,0 +1,8 @@
+<library path="lib/libmodel_interface">
+    <class type="model_interface::ModelInterface" base_class_type="robot_interface::TaskInterface">
+        <description>
+            This plugin implements a method to interpret real world robot poses to rl-states using a Theoretical model.
+            Depending on the discrete model world, states are selected.
+        </description>
+    </class>
+</library>

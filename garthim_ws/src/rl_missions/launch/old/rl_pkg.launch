@@ -1,0 +1,13 @@
+<launch>
+    <!-- <include file="$(find crumb_gazebo)/launch/crumb_world.launch" />
+    -->
+    <include file="$(find crumb_gazebo)/launch/crumb_world.launch">
+        <arg name="world_name" value="$(find crumb_gazebo)/worlds/crumb_walls.world"/>
+  
+       <!-- <arg name="robot_model_name" value="$(arg robot_model_name)" />
+        <arg name="gazebo_namespace" value="$(arg gazebo_namespace)"/> -->
+    </include>
+    <node name="rl_gazebo" pkg="rl_gazebo" type="rl_gazebo_node" output="screen"/>
+
+    <node pkg="rl_pkg" name="sarsa" type="sarsa_master" output="screen" cwd="node"/>
+</launch>

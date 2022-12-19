@@ -1,0 +1,7 @@
+<library path="lib/libtrue_online_sarsa">
+    <class type="critic::TrueOnlineSarsa" base_class_type="critic::Critic">
+        <description>
+            This plugin implements SARSA-LAMBDA Reinforcement Learning algorithm.
+        </description>
+    </class>
+</library>

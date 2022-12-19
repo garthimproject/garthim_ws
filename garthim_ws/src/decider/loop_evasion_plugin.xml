@@ -1,0 +1,9 @@
+<library path="lib/libdecider_loop_evasion">
+    <class type="decider::DeciderLoopEvasion" base_class_type="decider::Decider">
+        <description>
+            This plugin implements decider for garthim-rl stack.
+            Actions would be selected following a boltzmann soft-max strategy with an ad-hoc
+             local minima evasion startegy.
+        </description>
+    </class>
+</library>

@@ -1,0 +1,8 @@
+<library path="lib/libdecider_max_policy">
+    <class type="decider::DeciderMaxPolicy" base_class_type="decider::Decider">
+        <description>
+            This plugin implements decider for garthim-rl stack.
+            Actions maxing value-function would be selected.
+        </description>
+    </class>
+</library>

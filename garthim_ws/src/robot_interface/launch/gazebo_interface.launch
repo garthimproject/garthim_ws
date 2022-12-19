@@ -1,0 +1,28 @@
+<launch>
+    <param name="radius" value="0.5"/>
+    <param name="radius_levels" value="8"/>
+    <param name="orientation_levels" value="8"/>
+    <param name="total_actions" value="4"/>
+    <param name="linear_velocity_module" value="0.3"/>
+    <param name="angular_velocity_module" value="0.9"/>
+    <param name="time_for_action" value="1.0"/>
+    <param name="max_episodes" value="1"/>
+    <param name="max_steps" value="1"/>
+    <param name="agent_interface" value="gazebo"/>
+    <arg name="use_sim_time" default="true"/>
+
+    <!-- Load the URDF into the ROS Parameter Server -->
+    <param name="robot_description"
+        command="$(find xacro)/xacro.py '$(find crumb_description)/urdf/crumb.xacro'" />
+    <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -model crumb -param robot_description"/>
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"
+    respawn="false" output="screen">
+        <param name="publish_frequency" type="double" value="30.0" />
+
+        <remap from="/joint_states" to="/joint_states" />
+    </node>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="odom_footprint_tf" args="1 0 0 0 0 0 1 odom base_footprint" />
+</launch>

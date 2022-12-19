@@ -1,0 +1,29 @@
+<launch>
+    <rosparam param="actions_enabled">
+        [0,1,2,3]
+    </rosparam>
+    <arg name="robot_model_name" default="crumb" />
+     <arg name="gazebo_namespace" value="gazebo" />
+     <param name="gazebo_namespace" value="$(arg gazebo_namespace)" />
+    <param name="robot_model_name" value="$(arg robot_model_name)"/>
+    <node pkg="robot_interface" name="rl" type="gazebo_interface_node" output="screen" cwd="node">
+        <param name="task_interface" value="navigation_interface::NavigationInterface" />
+        <param name="discrete" value="true" />
+        <param name="radius_target" value="0.5"/>
+        <param name="radius" value="1.5"/>
+        <param name="radius_levels" value="8"/>
+        <param name="orientation_levels" value="8"/>
+        <param name="linear_velocity_module" value="0.3"/>
+        <param name="angular_velocity_module" value="0.9"/>
+        <param name="time_for_action" value="1.0"/>
+        <param name="max_episodes" value="500"/>
+        <param name="episodic" value="true" />
+        <param name="max_steps_per_episode" value="250"/>
+    </node> 
+    <include file="$(find rl_missions)/launch/gazebo_environment.test">
+        <arg name="robot_model_name" value="$(arg robot_model_name)" />
+        <arg name="gazebo_namespace" value="$(arg gazebo_namespace)" />
+        <arg name="max_steps" value="300000"/>
+        <arg name="max_episodes" value="2000" />
+    </include>
+</launch>

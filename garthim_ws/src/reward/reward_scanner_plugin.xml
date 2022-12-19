@@ -1,0 +1,9 @@
+<library path="lib/libreward_next_state_scanner">
+    <class type="reward::RewardNextStateScannerFunction" base_class_type="reward::RewardFunction">
+        <description>
+            This plugin implements reward function for garthim-rl stack.
+            This reward function considers the existence of obstacles and 
+            gives a negative reward if a collision is detected in next_state.
+        </description>
+    </class>
+</library>

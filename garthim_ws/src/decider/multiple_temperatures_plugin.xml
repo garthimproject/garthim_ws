@@ -1,0 +1,8 @@
+<library path="lib/libdecider_multiple_temperatures">
+    <class type="decider::DeciderMultipleTemperatures" base_class_type="decider::Decider">
+        <description>
+            This plugin implements decider for garthim-rl stack.
+            Actions would be selected following a boltzmann soft-max strategy.
+        </description>
+    </class>
+</library>
